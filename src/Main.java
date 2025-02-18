@@ -76,9 +76,15 @@ public class Main {
             List<Event> events = new ArrayList<>();
             try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath))) {
                 String line;
-                reader.readLine(); // Skip header line
+                reader.readLine();
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split("\t");
+                    if (parts.length < 7) {
+                        String nextLine = reader.readLine();
+                        if (nextLine != null) {
+                            parts = (line + " " + nextLine).split("\t");
+                        }
+                    }
                     Event event = new Event();
                     event.setId(Integer.parseInt(parts[0]));
                     event.setHeld(parts[1]);
@@ -91,22 +97,21 @@ public class Main {
                 }
             }
             return events;
-
         }
 
-       //public static void writeEventsTSV;
+        /**
+         * javadoc
+         */
+       public static void numberOfHeldenWithBigGlobalEinfluss(List<Event> events, double threshold) {
+           long count = events.stream()
+                   .filter(event -> event.getGlobalerEinfluss() > threshold)
+                   .map(Event::getHeld)
+                   .distinct()
+                   .count();
+           System.out.println("Number of unique Helden with Globaler Einfluss greater than " + threshold + ": " + count);
+       }
+       }
 
-        public static void displayGlobalerEinfluss(String[] args) throws Exception {
-            List<Event> events = readEvents("src/main/events.tsv");
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Bitte geben Sie den Mindestenwert für den Globalen Einfluss ein:");
-            double minGlobalerEinfluss = scanner.nextDouble();
-            Set<String> helden = events.stream()
-                    .filter(event -> event.getGlobalerEinfluss() > minGlobalerEinfluss)
-                    .map(Event::getHeld)
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
-            helden.forEach(System.out::println);
-        }
 
 
     }
