@@ -23,15 +23,70 @@ public class Main {
         private double GlobalerEinfluss;
 
 
-//        - Id – Eindeutige Identifikationsnummer der Konfrontation
-//        (int)
-//        - Held – Name des Haupthelden (String)
-//        - Antagonist – Name des Hauptgegners (String)
-//        - Konfrontationstyp – Kategorie des Ereignisses (Enum:
-//        Individuell, Team, Galaktisch, Multiversal)
-//        - Ort – Ort, an dem die Konfrontation stattfand (String)
-//        - Datum – Datum des Ereignisses (LocalDate)
-//
+        public int getId() {
+            return Id;
+        }
+        public void setId(int id) {
+            this.Id = id;
+        }
+        public String getHeld() {
+            return Held;
+        }
+        public void setHeld(String held) {
+            this.Held = held;
+        }
+        public String getAntagonist() {
+            return Antagonist;
+        }
+        public void setAntagonist(String antagonist) {
+            this.Antagonist = antagonist;
+        }
+        public String getKonfrontationstyp() {
+            return Konfrontationstyp;
+        }
+        public void setKonfrontationstyp(String konfrontationstyp) {
+            this.Konfrontationstyp = konfrontationstyp;
+        }
+        public String getOrt() {
+            return Ort;
+        }
+        public void setOrt(String ort) {
+            this.Ort = ort;
+        }
+        public LocalDate getDatum() {
+            return Datum;
+        }
+        public void setDatum(LocalDate datum) {
+            this.Datum = datum;
+        }
+        public double getGlobalerEinfluss() {
+            return GlobalerEinfluss;
+        }
+        public void setGlobalerEinfluss(double globalerEinfluss) {
+            this.GlobalerEinfluss = globalerEinfluss;
+        }
+
+        public static List<Event> readEvents(String filePath) throws Exception {
+            List<Event> events = new ArrayList<>();
+            try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath))) {
+                String line;
+                reader.readLine(); // Skip header line
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split("\t");
+                    Event event = new Event();
+                    event.setId(Integer.parseInt(parts[0]));
+                    event.setHeld(parts[1]);
+                    event.setAntagonist(parts[2]);
+                    event.setKonfrontationstyp(parts[3]);
+                    event.setOrt(parts[4]);
+                    event.setDatum(LocalDate.parse(parts[5]));
+                    event.setGlobalerEinfluss(Double.parseDouble(parts[6]));
+                    events.add(event);
+                }
+            }
+            return events;
+
+        }
 
 
     }
