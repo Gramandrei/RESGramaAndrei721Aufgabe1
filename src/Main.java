@@ -90,33 +90,36 @@ public class Main {
         public void setGlobalerEinfluss(double globalerEinfluss) {
             this.GlobalerEinfluss = globalerEinfluss;
         }
-
+        
         public static List<Event> readEvents(String filePath) throws Exception {
-            List<Event> events = new ArrayList<>();
-            try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath))) {
-                String line;
-                reader.readLine();
-                while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split("\t");
-                    if (parts.length < 7) {
-                        String nextLine = reader.readLine();
-                        if (nextLine != null) {
-                            parts = (line + " " + nextLine).split("\t");
-                        }
-                    }
-                    Event event = new Event();
-                    event.setId(Integer.parseInt(parts[0]));
-                    event.setHeld(parts[1]);
-                    event.setAntagonist(parts[2]);
-                    event.setKonfrontationstyp(parts[3]);
-                    event.setOrt(parts[4]);
-                    event.setDatum(LocalDate.parse(parts[5]));
-                    event.setGlobalerEinfluss(Double.parseDouble(parts[6]));
-                    events.add(event);
-                }
+    List<Event> events = new ArrayList<>();
+    try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath))) {
+        String line;
+        reader.readLine(); // Skip header
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split("\t");
+            if (parts.length < 7) {
+                // Handle case where line is split incorrectly
+                continue;
             }
-            return events;
+            try {
+                Event event = new Event();
+                event.setId(Integer.parseInt(parts[0].trim()));
+                event.setHeld(parts[1].trim());
+                event.setAntagonist(parts[2].trim());
+                event.setKonfrontationstyp(parts[3].trim());
+                event.setOrt(parts[4].trim());
+                event.setDatum(LocalDate.parse(parts[5].trim()));
+                event.setGlobalerEinfluss(Double.parseDouble(parts[6].trim()));
+                events.add(event);
+            } catch (NumberFormatException | DateTimeParseException e) {
+                // Log and skip malformed lines
+                System.err.println("Skipping malformed line: " + line);
+            }
         }
+    }
+    return events;
+}
 
         /**
          * javadoc
@@ -153,8 +156,8 @@ public class Main {
         try {
 
 
-            List<Event> events = Event.readEvents("src/evenimente.tsv");
-            Scanner scanner = new Scanner(System.in);
+          //  List<Event> events = Event.readEvents("src/evenimente.tsv");
+          //  Scanner scanner = new Scanner(System.in);
 
             System.out.print("Enter GlobalEinfluss: ");
             Event.numberOfHeldenWithBigGlobalEinfluss(events, 1000);;
