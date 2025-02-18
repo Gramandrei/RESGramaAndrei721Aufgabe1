@@ -1,4 +1,4 @@
-package main;
+//package main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,6 +11,11 @@ import java.util.stream.Collectors;
 
 
 public class Main {
+
+//    public enum Held {
+//        Wolverine,Doctor Strange, SpiderMan, Ironman, Hulk, Thor
+//
+//    }
 
     public static class Event{
 
@@ -35,6 +40,7 @@ public class Main {
         public void setHeld(String held) {
             this.Held = held;
         }
+
         public String getAntagonist() {
             return Antagonist;
         }
@@ -88,10 +94,22 @@ public class Main {
 
         }
 
+       //public static void writeEventsTSV;
+
+        public static void displayGlobalerEinfluss(String[] args) throws Exception {
+            List<Event> events = readEvents("src/main/events.tsv");
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Bitte geben Sie den Mindestenwert für den Globalen Einfluss ein:");
+            double minGlobalerEinfluss = scanner.nextDouble();
+            Set<String> helden = events.stream()
+                    .filter(event -> event.getGlobalerEinfluss() > minGlobalerEinfluss)
+                    .map(Event::getHeld)
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+            helden.forEach(System.out::println);
+        }
+
 
     }
 }
 
-//First commit
-//First First
 
